@@ -1,0 +1,34 @@
+project:
+  type: website
+
+website:
+  title: "CNG Tutorials"
+  repo-url: https://github.com/VorGeo/cng-onboarding
+  repo-actions: [source, issue]
+  reader-mode: true
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - text: "STAC Tutorials"
+        contents:
+          - section: "Python"
+            contents:
+            - text: "Test Tutorial"
+              href: tutorials/test-tutorial
+
+format:
+  html:
+    theme:  # pandoc, default, flatly, darkly, sketchy, sandstone, cyborg, zephyr
+      light: flatly
+      dark: darkly
+    css: styles.css
+    toc: true
+
+execute:
+  freeze: true
