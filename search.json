@@ -1,10 +1,66 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "tutorials/s2-from-aws/index.html",
+    "href": "tutorials/s2-from-aws/index.html",
+    "title": "Access Sentinel 2 Data from AWS",
     "section": "",
-    "text": "About this site"
+    "text": "How to run this tutorial\n\n\n\nIn order to run the code in this tutorial, you can either download the notebook to run it on your local computer, or click the button below to run the tutorial in a GitHub Codespace."
+  },
+  {
+    "objectID": "tutorials/s2-from-aws/index.html#start-dask-client",
+    "href": "tutorials/s2-from-aws/index.html#start-dask-client",
+    "title": "Access Sentinel 2 Data from AWS",
+    "section": "Start Dask Client",
+    "text": "Start Dask Client\nThis step is optional, but it does improve load speed significantly. You don’t have to use Dask, as you can load data directly into memory of the notebook.\n\nclient = dask.distributed.Client()\nconfigure_rio(cloud_defaults=True, aws={\"aws_unsigned\": True}, client=client)\ndisplay(client)"
+  },
+  {
+    "objectID": "tutorials/s2-from-aws/index.html#find-stac-items-to-load",
+    "href": "tutorials/s2-from-aws/index.html#find-stac-items-to-load",
+    "title": "Access Sentinel 2 Data from AWS",
+    "section": "Find STAC Items to Load",
+    "text": "Find STAC Items to Load\n\nkm2deg = 1.0 / 111\nx, y = (113.887, -25.843)  # Center point of a query\nr = 100 * km2deg\nbbox = (x - r, y - r, x + r, y + r)\n\ncatalog = Client.open(\"https://earth-search.aws.element84.com/v1\")\n\nquery = catalog.search(\n    collections=[\"sentinel-2-l2a\"], datetime=\"2021-09-16\", limit=100, bbox=bbox\n)\n\nitems = list(query.items())\nprint(f\"Found: {len(items):d} datasets\")\n\n# Convert STAC items into a GeoJSON FeatureCollection\nstac_json = query.item_collection_as_dict()"
+  },
+  {
+    "objectID": "tutorials/s2-from-aws/index.html#review-query-result",
+    "href": "tutorials/s2-from-aws/index.html#review-query-result",
+    "title": "Access Sentinel 2 Data from AWS",
+    "section": "Review Query Result",
+    "text": "Review Query Result\nWe’ll use GeoPandas DataFrame object to make plotting easier.\n\ngdf = gpd.GeoDataFrame.from_features(stac_json, \"epsg:4326\")\n\n# Compute granule id from components\ngdf[\"granule\"] = (\n    gdf[\"mgrs:utm_zone\"].apply(lambda x: f\"{x:02d}\")\n    + gdf[\"mgrs:latitude_band\"]\n    + gdf[\"mgrs:grid_square\"]\n)\n\nfig = gdf.plot(\n    \"granule\",\n    edgecolor=\"black\",\n    categorical=True,\n    aspect=\"equal\",\n    alpha=0.5,\n    figsize=(6, 12),\n    legend=True,\n    legend_kwds={\"loc\": \"upper left\", \"frameon\": False, \"ncol\": 1},\n)\n_ = fig.set_title(\"STAC Query Results\")"
+  },
+  {
+    "objectID": "tutorials/s2-from-aws/index.html#plot-stac-items-on-a-map",
+    "href": "tutorials/s2-from-aws/index.html#plot-stac-items-on-a-map",
+    "title": "Access Sentinel 2 Data from AWS",
+    "section": "Plot STAC Items on a Map",
+    "text": "Plot STAC Items on a Map\n\n# https://github.com/python-visualization/folium/issues/1501\nfig = Figure(width=\"400px\", height=\"500px\")\nmap1 = folium.Map()\nfig.add_child(map1)\n\nfolium.GeoJson(\n    shapely.geometry.box(*bbox),\n    style_function=lambda x: dict(fill=False, weight=1, opacity=0.7, color=\"olive\"),\n    name=\"Query\",\n).add_to(map1)\n\ngdf.explore(\n    \"granule\",\n    categorical=True,\n    tooltip=[\n        \"granule\",\n        \"datetime\",\n        \"s2:nodata_pixel_percentage\",\n        \"eo:cloud_cover\",\n    ],\n    popup=True,\n    style_kwds=dict(fillOpacity=0.1, width=2),\n    name=\"STAC\",\n    m=map1,\n)\n\nmap1.fit_bounds(bounds=convert_bounds(gdf.unary_union.bounds))\ndisplay(fig)"
+  },
+  {
+    "objectID": "tutorials/s2-from-aws/index.html#construct-dask-dataset",
+    "href": "tutorials/s2-from-aws/index.html#construct-dask-dataset",
+    "title": "Access Sentinel 2 Data from AWS",
+    "section": "Construct Dask Dataset",
+    "text": "Construct Dask Dataset\nNote that even though there are 9 STAC Items on input, there is only one timeslice on output. This is because of groupby=\"solar_day\". With that setting stac_load will place all items that occured on the same day (as adjusted for the timezone) into one image plane.\n\n# Since we will plot it on a map we need to use `EPSG:3857` projection\ncrs = \"epsg:3857\"\nzoom = 2**5  # overview level 5\n\nxx = stac_load(\n    items,\n    bands=(\"red\", \"green\", \"blue\"),\n    crs=crs,\n    resolution=10 * zoom,\n    chunks={},  # &lt;-- use Dask\n    groupby=\"solar_day\",\n    stac_cfg=cfg,\n)\ndisplay(xx)"
+  },
+  {
+    "objectID": "tutorials/s2-from-aws/index.html#load-data-and-convert-to-rgba",
+    "href": "tutorials/s2-from-aws/index.html#load-data-and-convert-to-rgba",
+    "title": "Access Sentinel 2 Data from AWS",
+    "section": "Load data and convert to RGBA",
+    "text": "Load data and convert to RGBA\n\n%%time\nrgba = to_rgba(xx, clamp=(1, 3000))\n_rgba = rgba.compute()"
+  },
+  {
+    "objectID": "tutorials/s2-from-aws/index.html#display-image-on-a-map",
+    "href": "tutorials/s2-from-aws/index.html#display-image-on-a-map",
+    "title": "Access Sentinel 2 Data from AWS",
+    "section": "Display Image on a map",
+    "text": "Display Image on a map\n\nmap2 = folium.Map()\n\nfolium.GeoJson(\n    shapely.geometry.box(*bbox),\n    style_function=lambda x: dict(fill=False, weight=1, opacity=0.7, color=\"olive\"),\n    name=\"Query\",\n).add_to(map2)\n\ngdf.explore(\n    \"granule\",\n    categorical=True,\n    tooltip=[\n        \"granule\",\n        \"datetime\",\n        \"s2:nodata_pixel_percentage\",\n        \"eo:cloud_cover\",\n    ],\n    popup=True,\n    style_kwds=dict(fillOpacity=0.1, width=2),\n    name=\"STAC\",\n    m=map2,\n)\n\n\n# Image bounds are specified in Lat/Lon order with Lat axis inversed\nimage_bounds = convert_bounds(_rgba.geobox.geographic_extent.boundingbox, invert_y=True)\nimg_ovr = folium.raster_layers.ImageOverlay(\n    _rgba.isel(time=0).data, bounds=image_bounds, name=\"Image\"\n)\nimg_ovr.add_to(map2)\nmap2.fit_bounds(bounds=image_bounds)\n\nfolium.LayerControl().add_to(map2)\nfolium.plugins.Fullscreen().add_to(map2)\nmap2"
+  },
+  {
+    "objectID": "tutorials/s2-from-aws/index.html#load-with-bounding-box",
+    "href": "tutorials/s2-from-aws/index.html#load-with-bounding-box",
+    "title": "Access Sentinel 2 Data from AWS",
+    "section": "Load with bounding box",
+    "text": "Load with bounding box\nAs you can see stac_load returned all the data covered by STAC items returned from the query. This happens by default as stac_load has no way of knowing what your query was. But it is possible to control what region is loaded. There are several mechanisms available, but probably simplest one is to use bbox= parameter (compatible with stac_client).\nLet’s load a small region at native resolution to demonstrate.\n\nr = 6.5 * km2deg\nsmall_bbox = (x - r, y - r, x + r, y + r)\n\nyy = stac_load(\n    items,\n    bands=(\"red\", \"green\", \"blue\"),\n    crs=crs,\n    resolution=10,\n    chunks={},  # &lt;-- use Dask\n    groupby=\"solar_day\",\n    stac_cfg=cfg,\n    bbox=small_bbox,\n)\nim_small = to_rgba(yy, clamp=(1, 3000)).compute()\n\n\nimg_zoomed_in = odc.ui.mk_data_uri(\n    odc.ui.to_jpeg_data(im_small.isel(time=0).data, quality=80), \"image/jpeg\"\n)\nprint(f\"Image url: {img_zoomed_in[:64]}...\")\n\n\nHTML(\n    data=f\"\"\"\n&lt;style&gt; .img-two-column{{\n  width: 50%;\n  float: left;\n}}&lt;/style&gt;\n&lt;img src=\"{img_zoomed_in}\" alt=\"Sentinel-2 Zoom in\" class=\"img-two-column\"&gt;\n&lt;img src=\"{img_ovr.url}\" alt=\"Sentinel-2 Mosaic\" class=\"img-two-column\"&gt;\n\"\"\"\n)"
   },
   {
     "objectID": "index.html",
@@ -33,5 +89,12 @@
     "title": "Cloud Native Geospatial (CNG) Tutorials",
     "section": "Contributing",
     "text": "Contributing\n[TODO… Describe how to contribute changes to the tutorials. Describe the steps for creating a new tutorial.]"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
   }
 ]
