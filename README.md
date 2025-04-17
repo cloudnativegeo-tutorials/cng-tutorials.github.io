@@ -59,8 +59,20 @@ Steps:
 
 ## Contributing
 
-*[TODO... Describe how to contribute changes to the tutorials. Describe the steps for creating a new tutorial.]*
+### Contributing to an existing tutorial
+*[TODO... Describe how to contribute changes to a tutorial.]*
 
+### Creating a new tutorial
+1. Create a new tutorial repo by cloning the template repo
+2. Draft the tutorial
+    * Update the pixi environment by either running `pixi add <PACKAGE>` or by editing the `pyproject.toml` file.
+    * Edit the `index.ipynb` file to add tutorial content.
+    * Preview the tutorial by running `quarto preview` in the tutorial directory.
+3. Add the tutorial to the main website
+    * Add the tutorial repository to this repository as a submodule
+        * `git submodule add <TUTORIAL_REPO_URL> tutorials/<TUTORIAL_NAME>`
+        * `git submodule update --init --recursive`
+    * Add the tutorial to navigation by editing the `_quarto.yml` file
 
 # Colophon
 
