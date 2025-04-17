@@ -1,6 +1,3 @@
-[submodule "tutorials/test-tutorial"]
-	path = tutorials/test-tutorial
-	url = https://github.com/cloudnativegeo-tutorials/tutorial-template
 [submodule "tutorials/s2-from-aws"]
 	path = tutorials/s2-from-aws
 	url = https://github.com/cloudnativegeo-tutorials/s2-from-aws
