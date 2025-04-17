@@ -19,8 +19,8 @@ website:
         contents:
           - section: "Python"
             contents:
-            - text: "Test Tutorial"
-              href: tutorials/test-tutorial
+            - text: "S2 from AWS"
+              href: tutorials/s2-from-aws
 
 format:
   html:
