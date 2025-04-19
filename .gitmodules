@@ -1,3 +1,6 @@
 [submodule "tutorials/s2-from-aws"]
 	path = tutorials/s2-from-aws
 	url = https://github.com/cloudnativegeo-tutorials/s2-from-aws
+[submodule "tutorials/landsat-from-mspc"]
+	path = tutorials/landsat-from-mspc
+	url = https://github.com/cloudnativegeo-tutorials/tutorial-landsat-from-mspc

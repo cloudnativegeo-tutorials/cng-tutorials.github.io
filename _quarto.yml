@@ -21,6 +21,8 @@ website:
             contents:
             - text: "S2 from AWS"
               href: tutorials/s2-from-aws
+            - text: "Landsat from MSPC"
+              href: tutorials/landsat-from-mspc
 
 format:
   html:
