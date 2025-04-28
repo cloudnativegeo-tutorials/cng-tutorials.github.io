@@ -15,15 +15,10 @@ website:
     style: "docked"
     search: true
     contents:
-      - text: "STAC Tutorials"
-        contents:
-          - section: "Python"
-            contents:
-            - text: "S2 from AWS"
-              href: tutorials/s2-from-aws
-            - text: "Landsat from MSPC"
-              href: tutorials/landsat-from-mspc
-
+      - text: "S2 from AWS"
+        href: tutorials/s2-from-aws.qmd
+      - text: "Landsat from MSPC"
+        href: tutorials/landsat-from-mspc.qmd
 format:
   html:
     theme:  # pandoc, default, flatly, darkly, sketchy, sandstone, cyborg, zephyr
@@ -33,4 +28,4 @@ format:
     toc: true
 
 execute:
-  freeze: true
+  freeze: auto
