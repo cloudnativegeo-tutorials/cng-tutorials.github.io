@@ -16,9 +16,10 @@ website:
     search: true
     contents:
       - text: "S2 from AWS"
-        href: tutorials/s2-from-aws.qmd
+        href: tutorials/s2-from-aws/index.ipynb
       - text: "Landsat from MSPC"
-        href: tutorials/landsat-from-mspc.qmd
+        href: tutorials/landsat-from-mspc/index.ipynb
+
 format:
   html:
     theme:  # pandoc, default, flatly, darkly, sketchy, sandstone, cyborg, zephyr
