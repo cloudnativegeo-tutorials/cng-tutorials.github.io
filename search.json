@@ -22,90 +22,6 @@
     ]
   },
   {
-    "objectID": "tutorials/landsat-from-mspc.html",
-    "href": "tutorials/landsat-from-mspc.html",
-    "title": "CNG Tutorials",
-    "section": "",
-    "text": "How to run this tutorial\n\n\n\nIn order to run the code in this tutorial, you can either download the notebook to run it on your local computer, or click the button below to run the tutorial in a GitHub Codespace.\n\n\n\n\n\nThe Planetary Computer catalogs the datasets we host using the STAC (SpatioTemporal Asset Catalog) specification. We provide a STAC API endpoint that can be used to search our datasets by space, time, and more. This quickstart will show you how to search for data using our STAC API and open-source Python libraries. For more on how to use our STAC API from R, see Reading data from the STAC API with R.\nFirst we’ll use pystac-client to open up our STAC API:\n\n\nWe can use the STAC API to search for assets meeting some criteria. This might include the date and time the asset covers, is spatial extent, or any other property captured in the STAC item’s metadata.\nIn this example we’ll search for imagery from Landsat Collection 2 Level-2 area around Microsoft’s main campus in December of 2020.\nIn that example our spatial query used a bounding box with a bbox. Alternatively, you can pass a GeoJSON object as intersects\narea_of_interest = {\n    \"type\": \"Polygon\",\n    \"coordinates\": [\n        [\n            [-122.2751, 47.5469],\n            [-121.9613, 47.9613],\n            [-121.9613, 47.9613],\n            [-122.2751, 47.9613],\n            [-122.2751, 47.5469],\n        ]\n    ],\n}\n\ntime_range = \"2020-12-01/2020-12-31\"\n\nsearch = catalog.search(\n    collections=[\"landsat-8-c2-l2\"], intersects=area_of_interest, datetime=time_range\n)\nitems is a pystac.ItemCollection. We can see that 4 items matched our search criteria.\nEach pystac.Item in this ItemCollection includes all the metadata for that scene. STAC Items are GeoJSON features, and so can be loaded by libraries like geopandas.\nWe can use the eo extension to sort the items by cloudiness. We’ll grab an item with low cloudiness:\nEach STAC item has one or more Assets, which include links to the actual files.\nHere, we’ll inspect the thumbnail asset.\nThat rendered_preview asset is generated dynamically from the raw data using the Planetary Computer’s data API. We can access the raw data, stored as Cloud Optimzied GeoTIFFs in Azure Blob Storage, using one of the other assets. That said, we do need to do one more thing before accessing the data. If we simply made a request to the file in blob storage we’d get a 404:\nThat’s because the Plantary Computer uses Azure Blob Storage SAS Tokens to enable access to our data, which allows us to provide the data for free to anyone, anywhere while maintaining some control over the amount of egress for datasets.\nTo get a token for access, you can use the Planetary Computer’s Data Authentication API. You can access that anonymously, or you can provide an API Key for higher rate limits and longer-lived tokens.\nYou can also use the planetary-computer package to generate tokens and sign asset HREFs for access. You can install via pip with\n&gt; pip install planetary-computer\nWe can load up that single COG using libraries like rioxarray or rasterio\nIf you wish to work with multiple STAC items as a datacube, you can use libraries like stackstac or odc-stac.\n\n\n\nPreviously, we searched for items by space and time. Because the Planetary Computer’s STAC API supports the query parameter, you can search on additional properties on the STAC item.\nFor example, collections like sentinel-2-l2a and landsat-8-c2-l2 both implement the eo STAC extension and include an eo:cloud_cover property. Use query={\"eo:cloud_cover\": {\"lt\": 20}} to return only items that are less than 20% cloudy.\nOther common uses of the query parameter is to filter a collection down to items of a specific type, For example, the GOES-CMI collection includes images from various when the satellite is in various modes, which produces images of either the Full Disk of the earth, the continental United States, or a mesoscale. You can use goes:image-type to filter down to just the ones you want.\n\n\n\nSTAC items are proper GeoJSON Features, and so can be treated as a kind of data on their own.\nOr we can plot cloudiness of a region over time.\n\n\n\nOur catalog is a STAC Catalog that we can crawl or search. The Catalog contains STAC Collections for each dataset we have indexed (which is not the yet the entirity of data hosted by the Planetary Computer).\nCollections have information about the STAC Items they contain. For instance, here we look at the Bands available for Landsat Collection 2 Level 2 data:\nWe can see what Assets are available on our item with:\nSome collections, like Daymet include collection-level assets. You can use the .assets property to access those assets.\nJust like assets on items, these assets include links to data in Azure Blob Storage.\n\n\nSource: How to run this tutorial"
-  },
-  {
-    "objectID": "tutorials/landsat-from-mspc.html#reading-data-from-the-stac-api",
-    "href": "tutorials/landsat-from-mspc.html#reading-data-from-the-stac-api",
-    "title": "CNG Tutorials",
-    "section": "",
-    "text": "The Planetary Computer catalogs the datasets we host using the STAC (SpatioTemporal Asset Catalog) specification. We provide a STAC API endpoint that can be used to search our datasets by space, time, and more. This quickstart will show you how to search for data using our STAC API and open-source Python libraries. For more on how to use our STAC API from R, see Reading data from the STAC API with R.\nFirst we’ll use pystac-client to open up our STAC API:\n\n\nWe can use the STAC API to search for assets meeting some criteria. This might include the date and time the asset covers, is spatial extent, or any other property captured in the STAC item’s metadata.\nIn this example we’ll search for imagery from Landsat Collection 2 Level-2 area around Microsoft’s main campus in December of 2020.\nIn that example our spatial query used a bounding box with a bbox. Alternatively, you can pass a GeoJSON object as intersects\narea_of_interest = {\n    \"type\": \"Polygon\",\n    \"coordinates\": [\n        [\n            [-122.2751, 47.5469],\n            [-121.9613, 47.9613],\n            [-121.9613, 47.9613],\n            [-122.2751, 47.9613],\n            [-122.2751, 47.5469],\n        ]\n    ],\n}\n\ntime_range = \"2020-12-01/2020-12-31\"\n\nsearch = catalog.search(\n    collections=[\"landsat-8-c2-l2\"], intersects=area_of_interest, datetime=time_range\n)\nitems is a pystac.ItemCollection. We can see that 4 items matched our search criteria.\nEach pystac.Item in this ItemCollection includes all the metadata for that scene. STAC Items are GeoJSON features, and so can be loaded by libraries like geopandas.\nWe can use the eo extension to sort the items by cloudiness. We’ll grab an item with low cloudiness:\nEach STAC item has one or more Assets, which include links to the actual files.\nHere, we’ll inspect the thumbnail asset.\nThat rendered_preview asset is generated dynamically from the raw data using the Planetary Computer’s data API. We can access the raw data, stored as Cloud Optimzied GeoTIFFs in Azure Blob Storage, using one of the other assets. That said, we do need to do one more thing before accessing the data. If we simply made a request to the file in blob storage we’d get a 404:\nThat’s because the Plantary Computer uses Azure Blob Storage SAS Tokens to enable access to our data, which allows us to provide the data for free to anyone, anywhere while maintaining some control over the amount of egress for datasets.\nTo get a token for access, you can use the Planetary Computer’s Data Authentication API. You can access that anonymously, or you can provide an API Key for higher rate limits and longer-lived tokens.\nYou can also use the planetary-computer package to generate tokens and sign asset HREFs for access. You can install via pip with\n&gt; pip install planetary-computer\nWe can load up that single COG using libraries like rioxarray or rasterio\nIf you wish to work with multiple STAC items as a datacube, you can use libraries like stackstac or odc-stac.\n\n\n\nPreviously, we searched for items by space and time. Because the Planetary Computer’s STAC API supports the query parameter, you can search on additional properties on the STAC item.\nFor example, collections like sentinel-2-l2a and landsat-8-c2-l2 both implement the eo STAC extension and include an eo:cloud_cover property. Use query={\"eo:cloud_cover\": {\"lt\": 20}} to return only items that are less than 20% cloudy.\nOther common uses of the query parameter is to filter a collection down to items of a specific type, For example, the GOES-CMI collection includes images from various when the satellite is in various modes, which produces images of either the Full Disk of the earth, the continental United States, or a mesoscale. You can use goes:image-type to filter down to just the ones you want.\n\n\n\nSTAC items are proper GeoJSON Features, and so can be treated as a kind of data on their own.\nOr we can plot cloudiness of a region over time.\n\n\n\nOur catalog is a STAC Catalog that we can crawl or search. The Catalog contains STAC Collections for each dataset we have indexed (which is not the yet the entirity of data hosted by the Planetary Computer).\nCollections have information about the STAC Items they contain. For instance, here we look at the Bands available for Landsat Collection 2 Level 2 data:\nWe can see what Assets are available on our item with:\nSome collections, like Daymet include collection-level assets. You can use the .assets property to access those assets.\nJust like assets on items, these assets include links to data in Azure Blob Storage."
-  },
-  {
-    "objectID": "tutorials/s2-from-aws.html",
-    "href": "tutorials/s2-from-aws.html",
-    "title": "Access Sentinel 2 Data from AWS",
-    "section": "",
-    "text": "How to run this tutorial\n\n\n\nIn order to run the code in this tutorial, you can either download the notebook to run it on your local computer, or click the button below to run the tutorial in a GitHub Codespace.\n\n\n\n\n\nhttps://registry.opendata.aws/sentinel-2-l2a-cogs/\n\n\nThis step is optional, but it does improve load speed significantly. You don’t have to use Dask, as you can load data directly into memory of the notebook.\n\n\n\n\n\n\nWe’ll use GeoPandas DataFrame object to make plotting easier.\n\n\n\n\n\n\nNote that even though there are 9 STAC Items on input, there is only one timeslice on output. This is because of groupby=\"solar_day\". With that setting stac_load will place all items that occured on the same day (as adjusted for the timezone) into one image plane.\n\n\n\n\n\n\n\n\n\nAs you can see stac_load returned all the data covered by STAC items returned from the query. This happens by default as stac_load has no way of knowing what your query was. But it is possible to control what region is loaded. There are several mechanisms available, but probably simplest one is to use bbox= parameter (compatible with stac_client).\nLet’s load a small region at native resolution to demonstrate.\n\n\n\nSource: How to run this tutorial"
-  },
-  {
-    "objectID": "tutorials/s2-from-aws.html#start-dask-client",
-    "href": "tutorials/s2-from-aws.html#start-dask-client",
-    "title": "Access Sentinel 2 Data from AWS",
-    "section": "",
-    "text": "This step is optional, but it does improve load speed significantly. You don’t have to use Dask, as you can load data directly into memory of the notebook."
-  },
-  {
-    "objectID": "tutorials/s2-from-aws.html#review-query-result",
-    "href": "tutorials/s2-from-aws.html#review-query-result",
-    "title": "Access Sentinel 2 Data from AWS",
-    "section": "",
-    "text": "We’ll use GeoPandas DataFrame object to make plotting easier."
-  },
-  {
-    "objectID": "tutorials/s2-from-aws.html#construct-dask-dataset",
-    "href": "tutorials/s2-from-aws.html#construct-dask-dataset",
-    "title": "Access Sentinel 2 Data from AWS",
-    "section": "",
-    "text": "Note that even though there are 9 STAC Items on input, there is only one timeslice on output. This is because of groupby=\"solar_day\". With that setting stac_load will place all items that occured on the same day (as adjusted for the timezone) into one image plane."
-  },
-  {
-    "objectID": "tutorials/s2-from-aws.html#load-with-bounding-box",
-    "href": "tutorials/s2-from-aws.html#load-with-bounding-box",
-    "title": "Access Sentinel 2 Data from AWS",
-    "section": "",
-    "text": "As you can see stac_load returned all the data covered by STAC items returned from the query. This happens by default as stac_load has no way of knowing what your query was. But it is possible to control what region is loaded. There are several mechanisms available, but probably simplest one is to use bbox= parameter (compatible with stac_client).\nLet’s load a small region at native resolution to demonstrate."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Cloud Native Geospatial (CNG) Tutorials",
-    "section": "",
-    "text": "This repository contains code for creating a website of tutorials about Cloud-Native Geospatial (CNG) technologies."
-  },
-  {
-    "objectID": "index.html#viewing",
-    "href": "index.html#viewing",
-    "title": "Cloud Native Geospatial (CNG) Tutorials",
-    "section": "Viewing",
-    "text": "Viewing\nThe tutorials are hosted as static webpages on the website: vorgeo.github.io/cng-onboarding/ To browse through the available tutorials, use the navigation menu on the left side."
-  },
-  {
-    "objectID": "index.html#executing-the-code",
-    "href": "index.html#executing-the-code",
-    "title": "Cloud Native Geospatial (CNG) Tutorials",
-    "section": "Executing the Code",
-    "text": "Executing the Code\n\nLocal Execution (with Pixi)\nRequirements:\n\nLocal install of git\nLocal install of pixi\n\nSteps:\n\nClone the repo: git clone https://github.com/VorGeo/cng-onboarding.git\nNavigate to a tutorial directory. For example: cd tutorials/stac/python/python-read-stac/\nRun the start task to start up JupyterLab: pixi run start\n\nThis will install the tutorial’s code dependencies, start a JupyterLab server, and open up the tutorial in a browser window.\n\n\n\n\nLocal Execution (with Dev Containers)\nRequirements:\n\nLocal install of git\nLocal install of pixi\nLocal install of VS Code with the following extensions: Dev Containers, Docker\n\nSteps:\n\nClone the repo: git clone https://github.com/VorGeo/cng-onboarding.git\nOpen the cloned repo in VS Code.\nOpen the command palette (Ctrl+Shift+P or Cmd+Shift+P on Mac) and select “Dev Containers: Rebuild and Reopen in Container”.\n\nSelect the Container for the tutorial you want to run.\n\nOnce the Container is built, you can open up the notebook (index.ipynb) from the Explorer menu.\n\n\n\nCloud Execution (with GitHub Codespaces)\nRequirements:\n\nA GitHub account\n\nSteps:\n\nWithin the website (https://vorgeo.github.io/cng-onboarding/), open one of the tutorial pages.\nClick on the ‘Open in GitHub Codespaces’ button.\nIn the “Create codespace” page, modify the selection options as needed and then click “Create codespace”.\nA new Codespace will be started. It can take up to 5 minutes for the codespace to be configured, at which point you will see the message “Finished configuring codespace.” in the terminal tab.\nOnce the codespace is ready, you can interact with the tutorial in the same way as you would in a local environment. Open up the notebook (index.ipynb) and start executing the cells.\n\nYou may need to specify the kernel to use for the notebook. To do this, click on the kernel name in the top right corner of the notebook and select the default kernel (e.g., .pixi/envs/default/bin/python)."
-  },
-  {
-    "objectID": "index.html#contributing",
-    "href": "index.html#contributing",
-    "title": "Cloud Native Geospatial (CNG) Tutorials",
-    "section": "Contributing",
-    "text": "Contributing\n\nContributing to an existing tutorial\n[TODO… Describe how to contribute changes to a tutorial.]\n\n\nCreating a new tutorial\n\nCreate a new tutorial repo by cloning the template repo\nDraft the tutorial\n\nUpdate the pixi environment by either running pixi add &lt;PACKAGE&gt; or by editing the pyproject.toml file.\nEdit the index.ipynb file to add tutorial content.\nPreview the tutorial by running quarto preview in the tutorial directory.\n\nAdd the tutorial to the main website\n\nAdd the tutorial repository to this repository as a submodule\n\ngit submodule add &lt;TUTORIAL_REPO_URL&gt; tutorials/&lt;TUTORIAL_NAME&gt;\ngit submodule update --init --recursive\n\nAdd the tutorial to navigation by editing the _quarto.yml file"
-  },
-  {
     "objectID": "tutorials/s2-from-aws/index.html",
     "href": "tutorials/s2-from-aws/index.html",
     "title": "Access Sentinel 2 Data from AWS",
@@ -203,6 +119,41 @@
       "Home",
       "S2 from AWS"
     ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Cloud Native Geospatial (CNG) Tutorials",
+    "section": "",
+    "text": "This repository contains code for creating a website of tutorials about Cloud-Native Geospatial (CNG) technologies."
+  },
+  {
+    "objectID": "index.html#viewing",
+    "href": "index.html#viewing",
+    "title": "Cloud Native Geospatial (CNG) Tutorials",
+    "section": "Viewing",
+    "text": "Viewing\nThe tutorials are hosted as static webpages on the website: vorgeo.github.io/cng-onboarding/ To browse through the available tutorials, use the navigation menu on the left side."
+  },
+  {
+    "objectID": "index.html#executing-the-code",
+    "href": "index.html#executing-the-code",
+    "title": "Cloud Native Geospatial (CNG) Tutorials",
+    "section": "Executing the Code",
+    "text": "Executing the Code\n\nLocal Execution (with Pixi)\nRequirements:\n\nLocal install of git\nLocal install of pixi\n\nSteps:\n\nClone the repo: git clone https://github.com/VorGeo/cng-onboarding.git\nNavigate to a tutorial directory. For example: cd tutorials/stac/python/python-read-stac/\nRun the start task to start up JupyterLab: pixi run start\n\nThis will install the tutorial’s code dependencies, start a JupyterLab server, and open up the tutorial in a browser window.\n\n\n\n\nLocal Execution (with Dev Containers)\nRequirements:\n\nLocal install of git\nLocal install of pixi\nLocal install of VS Code with the following extensions: Dev Containers, Docker\n\nSteps:\n\nClone the repo: git clone https://github.com/VorGeo/cng-onboarding.git\nOpen the cloned repo in VS Code.\nOpen the command palette (Ctrl+Shift+P or Cmd+Shift+P on Mac) and select “Dev Containers: Rebuild and Reopen in Container”.\n\nSelect the Container for the tutorial you want to run.\n\nOnce the Container is built, you can open up the notebook (index.ipynb) from the Explorer menu.\n\n\n\nCloud Execution (with GitHub Codespaces)\nRequirements:\n\nA GitHub account\n\nSteps:\n\nWithin the website (https://vorgeo.github.io/cng-onboarding/), open one of the tutorial pages.\nClick on the ‘Open in GitHub Codespaces’ button.\nIn the “Create codespace” page, modify the selection options as needed and then click “Create codespace”.\nA new Codespace will be started. It can take up to 5 minutes for the codespace to be configured, at which point you will see the message “Finished configuring codespace.” in the terminal tab.\nOnce the codespace is ready, you can interact with the tutorial in the same way as you would in a local environment. Open up the notebook (index.ipynb) and start executing the cells.\n\nYou may need to specify the kernel to use for the notebook. To do this, click on the kernel name in the top right corner of the notebook and select the default kernel (e.g., .pixi/envs/default/bin/python)."
+  },
+  {
+    "objectID": "index.html#contributing",
+    "href": "index.html#contributing",
+    "title": "Cloud Native Geospatial (CNG) Tutorials",
+    "section": "Contributing",
+    "text": "Contributing\n\nContributing to an existing tutorial\n[TODO… Describe how to contribute changes to a tutorial.]\n\n\nCreating a new tutorial\n\nCreate a new tutorial repo by cloning the template repo\nDraft the tutorial\n\nUpdate the pixi environment by either running pixi add &lt;PACKAGE&gt; or by editing the pyproject.toml file.\nEdit the index.ipynb file to add tutorial content.\nPreview the tutorial by running quarto preview in the tutorial directory.\n\nAdd the tutorial to the main website\n\nAdd the tutorial repository to this repository as a submodule\n\ngit submodule add &lt;TUTORIAL_REPO_URL&gt; tutorials/&lt;TUTORIAL_NAME&gt;\ngit submodule update --init --recursive\n\nAdd the tutorial to navigation by editing the _quarto.yml file"
   },
   {
     "objectID": "tutorials/landsat-from-mspc/README_devcontainer.html",
