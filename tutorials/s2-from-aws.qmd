@@ -1,1 +1,0 @@
-{{< embed s2-from-aws/index.ipynb >}}

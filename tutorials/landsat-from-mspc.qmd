@@ -1,1 +1,0 @@
-{{< embed landsat-from-mspc/index.ipynb >}}
