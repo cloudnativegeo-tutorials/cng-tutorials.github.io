@@ -1,10 +1,13 @@
 project:
   type: website
 
+# listing:
+#   contents: tutorials
+#   categories: true
+#   sort: "date desc"
+
 website:
   title: "CNG Tutorials"
-  repo-url: https://github.com/VorGeo/cng-onboarding
-  repo-actions: [source, issue]
   reader-mode: true
   navbar:
     left:
