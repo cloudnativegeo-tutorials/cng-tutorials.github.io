@@ -1,5 +1,33 @@
 [
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Cloud Native Geospatial (CNG) Tutorials",
+    "section": "",
+    "text": "This repository contains code for creating a website of tutorials about Cloud-Native Geospatial (CNG) technologies."
+  },
+  {
+    "objectID": "index.html#viewing",
+    "href": "index.html#viewing",
+    "title": "Cloud Native Geospatial (CNG) Tutorials",
+    "section": "Viewing",
+    "text": "Viewing\nThe tutorials are hosted as static webpages on the website: vorgeo.github.io/cng-onboarding/ To browse through the available tutorials, use the navigation menu on the left side."
+  },
+  {
+    "objectID": "index.html#executing-the-code",
+    "href": "index.html#executing-the-code",
+    "title": "Cloud Native Geospatial (CNG) Tutorials",
+    "section": "Executing the Code",
+    "text": "Executing the Code\n\nLocal Execution (with Pixi)\nRequirements:\n\nLocal install of git\nLocal install of pixi\n\nSteps:\n\nClone the repo: git clone https://github.com/VorGeo/cng-onboarding.git\nNavigate to a tutorial directory. For example: cd tutorials/stac/python/python-read-stac/\nRun the start task to start up JupyterLab: pixi run start\n\nThis will install the tutorial’s code dependencies, start a JupyterLab server, and open up the tutorial in a browser window.\n\n\n\n\nLocal Execution (with Dev Containers)\nRequirements:\n\nLocal install of git\nLocal install of pixi\nLocal install of VS Code with the following extensions: Dev Containers, Docker\n\nSteps:\n\nClone the repo: git clone https://github.com/VorGeo/cng-onboarding.git\nOpen the cloned repo in VS Code.\nOpen the command palette (Ctrl+Shift+P or Cmd+Shift+P on Mac) and select “Dev Containers: Rebuild and Reopen in Container”.\n\nSelect the Container for the tutorial you want to run.\n\nOnce the Container is built, you can open up the notebook (index.ipynb) from the Explorer menu.\n\n\n\nCloud Execution (with GitHub Codespaces)\nRequirements:\n\nA GitHub account\n\nSteps:\n\nWithin the website (https://vorgeo.github.io/cng-onboarding/), open one of the tutorial pages.\nClick on the ‘Open in GitHub Codespaces’ button.\nIn the “Create codespace” page, modify the selection options as needed and then click “Create codespace”.\nA new Codespace will be started. It can take up to 5 minutes for the codespace to be configured, at which point you will see the message “Finished configuring codespace.” in the terminal tab.\nOnce the codespace is ready, you can interact with the tutorial in the same way as you would in a local environment. Open up the notebook (index.ipynb) and start executing the cells.\n\nYou may need to specify the kernel to use for the notebook. To do this, click on the kernel name in the top right corner of the notebook and select the default kernel (e.g., .pixi/envs/default/bin/python)."
+  },
+  {
+    "objectID": "index.html#contributing",
+    "href": "index.html#contributing",
+    "title": "Cloud Native Geospatial (CNG) Tutorials",
+    "section": "Contributing",
+    "text": "Contributing\n\nContributing to an existing tutorial\n[TODO… Describe how to contribute changes to a tutorial.]\n\n\nCreating a new tutorial\n\nCreate a new tutorial repo by cloning the template repo\nDraft the tutorial\n\nUpdate the pixi environment by either running pixi add &lt;PACKAGE&gt; or by editing the pyproject.toml file.\nEdit the index.ipynb file to add tutorial content.\nPreview the tutorial by running quarto preview in the tutorial directory.\n\nAdd the tutorial to the main website\n\nAdd the tutorial repository to this repository as a submodule\n\ngit submodule add &lt;TUTORIAL_REPO_URL&gt; tutorials/&lt;TUTORIAL_NAME&gt;\ngit submodule update --init --recursive\n\nAdd the tutorial to navigation by editing the _quarto.yml file"
+  },
+  {
     "objectID": "tutorials/landsat-from-mspc/index.html",
     "href": "tutorials/landsat-from-mspc/index.html",
     "title": "CNG Tutorials",
@@ -20,6 +48,20 @@
       "Home",
       "Landsat from MSPC"
     ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "tutorials/landsat-from-mspc/README_devcontainer.html",
+    "href": "tutorials/landsat-from-mspc/README_devcontainer.html",
+    "title": "DevContainer Instructions",
+    "section": "",
+    "text": "DevContainer Instructions\nThis tutorial has been opened in a devcontainer. Use the Explorer view tree to open a notebook."
   },
   {
     "objectID": "tutorials/s2-from-aws/index.html",
@@ -119,47 +161,5 @@
       "Home",
       "S2 from AWS"
     ]
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Cloud Native Geospatial (CNG) Tutorials",
-    "section": "",
-    "text": "This repository contains code for creating a website of tutorials about Cloud-Native Geospatial (CNG) technologies."
-  },
-  {
-    "objectID": "index.html#viewing",
-    "href": "index.html#viewing",
-    "title": "Cloud Native Geospatial (CNG) Tutorials",
-    "section": "Viewing",
-    "text": "Viewing\nThe tutorials are hosted as static webpages on the website: vorgeo.github.io/cng-onboarding/ To browse through the available tutorials, use the navigation menu on the left side."
-  },
-  {
-    "objectID": "index.html#executing-the-code",
-    "href": "index.html#executing-the-code",
-    "title": "Cloud Native Geospatial (CNG) Tutorials",
-    "section": "Executing the Code",
-    "text": "Executing the Code\n\nLocal Execution (with Pixi)\nRequirements:\n\nLocal install of git\nLocal install of pixi\n\nSteps:\n\nClone the repo: git clone https://github.com/VorGeo/cng-onboarding.git\nNavigate to a tutorial directory. For example: cd tutorials/stac/python/python-read-stac/\nRun the start task to start up JupyterLab: pixi run start\n\nThis will install the tutorial’s code dependencies, start a JupyterLab server, and open up the tutorial in a browser window.\n\n\n\n\nLocal Execution (with Dev Containers)\nRequirements:\n\nLocal install of git\nLocal install of pixi\nLocal install of VS Code with the following extensions: Dev Containers, Docker\n\nSteps:\n\nClone the repo: git clone https://github.com/VorGeo/cng-onboarding.git\nOpen the cloned repo in VS Code.\nOpen the command palette (Ctrl+Shift+P or Cmd+Shift+P on Mac) and select “Dev Containers: Rebuild and Reopen in Container”.\n\nSelect the Container for the tutorial you want to run.\n\nOnce the Container is built, you can open up the notebook (index.ipynb) from the Explorer menu.\n\n\n\nCloud Execution (with GitHub Codespaces)\nRequirements:\n\nA GitHub account\n\nSteps:\n\nWithin the website (https://vorgeo.github.io/cng-onboarding/), open one of the tutorial pages.\nClick on the ‘Open in GitHub Codespaces’ button.\nIn the “Create codespace” page, modify the selection options as needed and then click “Create codespace”.\nA new Codespace will be started. It can take up to 5 minutes for the codespace to be configured, at which point you will see the message “Finished configuring codespace.” in the terminal tab.\nOnce the codespace is ready, you can interact with the tutorial in the same way as you would in a local environment. Open up the notebook (index.ipynb) and start executing the cells.\n\nYou may need to specify the kernel to use for the notebook. To do this, click on the kernel name in the top right corner of the notebook and select the default kernel (e.g., .pixi/envs/default/bin/python)."
-  },
-  {
-    "objectID": "index.html#contributing",
-    "href": "index.html#contributing",
-    "title": "Cloud Native Geospatial (CNG) Tutorials",
-    "section": "Contributing",
-    "text": "Contributing\n\nContributing to an existing tutorial\n[TODO… Describe how to contribute changes to a tutorial.]\n\n\nCreating a new tutorial\n\nCreate a new tutorial repo by cloning the template repo\nDraft the tutorial\n\nUpdate the pixi environment by either running pixi add &lt;PACKAGE&gt; or by editing the pyproject.toml file.\nEdit the index.ipynb file to add tutorial content.\nPreview the tutorial by running quarto preview in the tutorial directory.\n\nAdd the tutorial to the main website\n\nAdd the tutorial repository to this repository as a submodule\n\ngit submodule add &lt;TUTORIAL_REPO_URL&gt; tutorials/&lt;TUTORIAL_NAME&gt;\ngit submodule update --init --recursive\n\nAdd the tutorial to navigation by editing the _quarto.yml file"
-  },
-  {
-    "objectID": "tutorials/landsat-from-mspc/README_devcontainer.html",
-    "href": "tutorials/landsat-from-mspc/README_devcontainer.html",
-    "title": "DevContainer Instructions",
-    "section": "",
-    "text": "DevContainer Instructions\nThis tutorial has been opened in a devcontainer. Use the Explorer view tree to open a notebook."
   }
 ]
